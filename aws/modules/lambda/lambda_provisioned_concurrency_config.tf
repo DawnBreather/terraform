@@ -1,13 +1,12 @@
 #---------------------------------------------------
 # AWS lambda provisioned concurrency config
 #---------------------------------------------------
-
 resource "aws_lambda_provisioned_concurrency_config" "lambda_provisioned_concurrency_config_alias" {
-    count                = "${var.enable_lambda_provisioned_concurrency_config_alias && !var.enable_lambda_provisioned_concurrency_config_version ? 1 : 0}" 
+    count                               = "${var.enable_lambda_provisioned_concurrency_config_alias && !var.enable_lambda_provisioned_concurrency_config_version ? 1 : 0}" 
 
-    function_name                     = aws_lambda_alias.example.function_name
-    provisioned_concurrent_executions = 1
-    qualifier                         = aws_lambda_alias.example.name
+    function_name                       = "${var.function_name}"
+    provisioned_concurrent_executions   = "${var.provisioned_concurrent_executions}"
+    qualifier                           = "${var.qualifier}"
 
     timeouts {
         create  = "${var.timeouts_create}"
@@ -25,9 +24,14 @@ resource "aws_lambda_provisioned_concurrency_config" "lambda_provisioned_concurr
 resource "aws_lambda_provisioned_concurrency_config" "lambda_provisioned_concurrency_config_version" {
     count                = "${var.enable_lambda_provisioned_concurrency_config_version && !var.enable_lambda_provisioned_concurrency_config_alias ? 1 : 0}" 
 
-    function_name                     = aws_lambda_function.example.function_name
-    provisioned_concurrent_executions = 1
-    qualifier                         = aws_lambda_function.example.version
+    function_name                       = "${var.function_name}"
+    provisioned_concurrent_executions   = "${var.provisioned_concurrent_executions}"
+    qualifier                           = "${var.qualifier}"
+
+    timeouts {
+        create  = "${var.timeouts_create}"
+        update  = "${var.timeouts_update}"
+    }
 
     lifecycle {
         create_before_destroy   = true
